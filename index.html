@@ -1,0 +1,64 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mission Control</title>
+    <style>
+        body {
+            background: #001;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .rocket-btn {
+            background: #003;
+            color: white;
+            border: 2px solid #0f0;
+            padding: 15px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .rocket-btn:hover {
+            background: #005;
+        }
+        #status {
+            margin: 20px;
+            padding: 20px;
+            background: #002;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Mission Control</h1>
+    
+    <div id="rocket-selection">
+        <button class="rocket-btn" onclick="selectRocket(0)">
+            Select Swift Rocket
+        </button>
+    </div>
+    
+    <div id="status"></div>
+    
+    <script>
+        // Inline JavaScript for immediate testing
+        class SimpleRocket {
+            constructor(name) {
+                this.name = name;
+                this.fuel = 0;
+                this.crew = [];
+            }
+        }
+        
+        let currentRocket = null;
+        
+        function selectRocket(index) {
+            currentRocket = new SimpleRocket("Swift");
+            document.getElementById('status').innerHTML = 
+                `Selected: ${currentRocket.name}`;
+        }
+    </script>
+</body>
+</html>
