@@ -1,100 +1,324 @@
-/* Add these additional styles to your existing style.css */
+/* style.css - Mission Control Game Styling */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+#game {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #4fc3f7;
+    text-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+}
+
+h2 {
+    color: #81c784;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+h3 {
+    color: #ffb74d;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+h4 {
+    color: #ba68c8;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+#budget-display {
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
+    border: 2px solid #4caf50;
+}
+
+#budget {
+    color: #ffeb3b;
+    font-size: 1.2em;
+}
 
 .section {
-    margin: 30px 0;
+    background: rgba(30, 35, 50, 0.8);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(79, 195, 247, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .hidden {
-    display: none !important;
+    display: none;
 }
 
-.rocket-specs, .destination-specs {
-    font-size: 0.8em;
-    color: #aaa;
+/* Rocket Selection */
+.rocket-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
-.status-panel h3 {
-    color: #00ff00;
-    margin-bottom: 15px;
+.rocket-btn {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    border: 2px solid #4fc3f7;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
 }
 
-.fuel-controls, .crew-controls {
+.rocket-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(79, 195, 247, 0.4);
+    border-color: #81c784;
+}
+
+.rocket-btn:active {
+    transform: translateY(-2px);
+}
+
+.rocket-specs {
+    display: block;
+    font-size: 0.85em;
+    margin-top: 10px;
+    color: #b0bec5;
+    font-weight: normal;
+}
+
+/* Status Panels */
+.status-panel {
+    background: rgba(20, 25, 35, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(129, 199, 132, 0.3);
+}
+
+/* Fuel Gauge */
+.fuel-gauge {
+    width: 100%;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    margin: 15px 0;
+    overflow: hidden;
+    border: 2px solid #4fc3f7;
+}
+
+.fuel-level {
+    height: 100%;
+    background: linear-gradient(90deg, #f44336 0%, #ff9800 30%, #ffeb3b 60%, #4caf50 100%);
+    width: 0%;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.6);
+}
+
+/* Fuel Controls */
+.fuel-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
     margin-top: 15px;
 }
 
-.fuel-controls button, .crew-controls button {
-    background: rgba(0,255,0,0.1);
+.fuel-controls button {
+    flex: 1;
+    min-width: 150px;
+    background: linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%);
     color: white;
-    border: 1px solid #00ff00;
-    padding: 8px 15px;
-    margin: 5px;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
     cursor: pointer;
-    border-radius: 5px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
-.fuel-controls button:hover, .crew-controls button:hover {
-    background: rgba(0,255,0,0.3);
+.fuel-controls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 111, 0, 0.4);
+}
+
+.fuel-controls button:disabled {
+    background: #424242;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Crew Section */
+.crew-list {
+    min-height: 50px;
+    margin: 15px 0;
 }
 
 .crew-member {
-    display: inline-block;
-    background: rgba(0,0,0,0.3);
-    padding: 5px 15px;
-    margin: 5px;
-    border-radius: 20px;
-    border: 1px solid #00ff00;
+    background: rgba(79, 195, 247, 0.2);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-left: 4px solid #4fc3f7;
 }
 
+.no-crew {
+    color: #9e9e9e;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Crew Controls */
+.crew-controls {
+    margin-top: 15px;
+}
+
+.crew-controls button {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.crew-controls button:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
+}
+
+.crew-controls button:disabled {
+    background: #424242;
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+}
+
+/* Destination Options */
 .destination-options {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
 }
 
 .destination-btn {
-    background: rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
     color: white;
-    border: 2px solid #ff9900;
+    border: 2px solid #ff5252;
     padding: 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
+    border-radius: 12px;
     font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
 }
 
 .destination-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(255,153,0,0.5);
-    background: rgba(255,153,0,0.1);
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(229, 57, 53, 0.5);
 }
 
+.destination-specs {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 10px;
+    color: #ffcdd2;
+    font-weight: normal;
+}
+
+/* Messages */
 .message {
-    padding: 20px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px 40px;
     border-radius: 10px;
-    margin: 20px 0;
-    text-align: center;
     font-size: 1.1em;
+    font-weight: bold;
+    z-index: 1000;
+    max-width: 80%;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        top: -100px;
+        opacity: 0;
+    }
+    to {
+        top: 20px;
+        opacity: 1;
+    }
 }
 
 .message.success {
-    background: rgba(0,255,0,0.2);
-    border: 2px solid #00ff00;
+    background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
+    border: 2px solid #4caf50;
 }
 
 .message.error {
-    background: rgba(255,0,0,0.2);
-    border: 2px solid #ff0000;
+    background: linear-gradient(135deg, #c62828 0%, #d32f2f 100%);
+    border: 2px solid #f44336;
 }
 
 .message.info {
-    background: rgba(0,150,255,0.2);
-    border: 2px solid #0096ff;
+    background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+    border: 2px solid #2196f3;
 }
 
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+    
+    .rocket-options,
+    .destination-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .fuel-controls {
+        flex-direction: column;
+    }
+    
+    .fuel-controls button {
+        width: 100%;
+    }
 }
