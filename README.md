@@ -4,66 +4,81 @@ A space-themed browser game where you manage rocket launches, hire crew, and com
 
 ## 🎮 How to Play
 
-### Starting Out
-- You begin with a budget of **$50,000**
-- Choose from 3 different rockets, each with different capabilities and costs
+### Game Flow
+Unlike traditional space games, Mission Control lets you **plan your entire mission before committing**! All options are visible from the start, so you can strategize how to achieve your goal within your budget.
 
-### Rocket Types
-- **🚀 Swift** - Small and efficient ($10,000)
-  - Fuel Capacity: 1,000L
-  - Crew: 3
-  - Fuel Burn Rate: 50L/min
+### Step-by-Step Guide
 
-- **🚀 Titan** - Medium-sized workhorse ($25,000)
-  - Fuel Capacity: 5,000L
-  - Crew: 5
-  - Fuel Burn Rate: 200L/min
-
-- **🚀 Colossus** - Large and powerful ($50,000)
-  - Fuel Capacity: 15,000L
-  - Crew: 8
-  - Fuel Burn Rate: 500L/min
-
-### Game Mechanics
-
-#### 1. Select Your Rocket
-Click on one of the rocket buttons to purchase it. This will deduct the cost from your budget.
-
-#### 2. Refuel Your Rocket
-- Fuel costs **$2 per liter**
-- Add 500L or 1000L at a time, or fill the entire tank
-- You need at least **50% fuel capacity** to launch
-
-#### 3. Hire Your Crew
-Choose from 5 available crew members:
-- **Commander Chen** - $5,000
-- **Pilot Garcia** - $4,000
-- **Engineer Kim** - $3,500
-- **Dr. Patel** - $3,000
-- **Specialist Jones** - $3,000
-
-Note: Each crew member can only be hired once per rocket!
-
-#### 4. Choose Your Mission
-Three destinations are available:
-
+#### 1. Choose Your Destination First
+Select where you want to go to see the mission requirements:
 - **🛸 International Space Station (ISS)**
   - Distance: 100km
   - Minimum Crew: 2
+  - Recommended Fuel: 600L
   - Reward: $10,000
 
 - **🌙 Moon**
   - Distance: 500km
   - Minimum Crew: 3
+  - Recommended Fuel: 2,500L
   - Reward: $50,000
 
 - **🔴 Mars**
   - Distance: 2,000km
   - Minimum Crew: 4
+  - Recommended Fuel: 8,000L
   - Reward: $200,000
 
-#### 5. Launch!
-Once you have enough fuel and crew, click on a destination to launch your rocket and earn your reward!
+#### 2. Select Your Rocket
+Based on your destination, choose an appropriate rocket:
+- **🚀 Swift** - Small and efficient ($10,000)
+  - Fuel Capacity: 1,000L
+  - Crew: 3
+  - Fuel Burn Rate: 50L/min
+  - *Best for: ISS missions*
+
+- **🚀 Titan** - Medium-sized workhorse ($25,000)
+  - Fuel Capacity: 5,000L
+  - Crew: 5
+  - Fuel Burn Rate: 200L/min
+  - *Best for: Moon missions*
+
+- **🚀 Colossus** - Large and powerful ($50,000)
+  - Fuel Capacity: 15,000L
+  - Crew: 8
+  - Fuel Burn Rate: 500L/min
+  - *Best for: Mars missions*
+
+#### 3. Add Fuel to Your Rocket
+- Fuel costs **$2 per liter**
+- Add 500L or 1000L at a time, or fill the entire tank
+- You need at least **50% fuel capacity** to launch
+- Check the recommended fuel for your destination
+
+#### 4. Hire Your Crew
+Browse all 8 available crew members and hire the ones you need:
+- **Commander Chen** - $5,000
+- **Pilot Garcia** - $4,000
+- **Engineer Kim** - $3,500
+- **Navigator Silva** - $3,500
+- **Medical Officer Rodriguez** - $3,200
+- **Dr. Patel** - $3,000
+- **Specialist Jones** - $3,000
+- **Technician Wang** - $2,800
+
+Remember: Each crew member can only be hired once, and different destinations require different minimum crew counts!
+
+#### 5. Check Your Pre-Launch Checklist
+The game automatically tracks your progress:
+- ✅ Destination selected
+- ✅ Rocket purchased
+- ✅ Fuel sufficient (50%+ capacity)
+- ✅ Crew meets minimum requirements
+
+#### 6. Launch!
+Once all checklist items are green, click the big red **LAUNCH MISSION** button to execute your mission and earn your reward!
+
+### Game Mechanics
 
 ## 🛠️ Technical Setup
 
@@ -133,11 +148,45 @@ tsc src/game.ts --outDir .
 
 ## 🎯 Game Strategy Tips
 
-1. **Start small**: Begin with the Swift rocket to test missions
-2. **ISS first**: Do low-risk ISS missions to build up capital
-3. **Upgrade gradually**: Once you have funds, move to Titan for Moon missions
-4. **Mars mission**: Only attempt Mars with the Colossus and a full crew
-5. **Budget management**: Always keep enough fuel budget for minimum launch requirements
+### Planning is Key!
+Since all options are visible from the start, you can plan your entire mission:
+
+1. **Choose your destination first**: This tells you exactly what you need (crew, fuel, rocket)
+2. **Work backwards from requirements**: Calculate what you can afford
+3. **Budget carefully**: Don't overspend on fuel or crew you don't need
+
+### Mission Strategies
+
+**ISS Mission (Beginner)**
+- Budget: ~$17,000-$19,000 total
+- Rocket: Swift ($10,000)
+- Crew: 2 cheapest members (~$6,000)
+- Fuel: 600-700L ($1,200-$1,400)
+- Profit: ~$10,000 reward - ~$17,000 spent = Break even or small loss
+- Purpose: Learning mission, low risk
+
+**Moon Mission (Intermediate)**
+- Budget: ~$35,000-$40,000 total
+- Rocket: Titan ($25,000)
+- Crew: 3-4 members (~$10,000-$14,000)
+- Fuel: 2,500-3,000L ($5,000-$6,000)
+- Profit: ~$50,000 reward - ~$40,000 spent = ~$10,000 profit
+- Purpose: First real money maker
+
+**Mars Mission (Advanced)**
+- Budget: $70,000+ total (need to earn money first!)
+- Rocket: Colossus ($50,000)
+- Crew: 4-6 members (~$14,000-$20,000)
+- Fuel: 8,000-10,000L ($16,000-$20,000)
+- Profit: ~$200,000 reward - ~$80,000 spent = ~$120,000 profit!
+- Purpose: Big payday, but requires successful missions first
+
+### Pro Tips
+- **Hire cheaper crew first**: Technician Wang ($2,800) and Dr. Patel ($3,000) are bargains
+- **Don't overfuel**: Check recommended amounts for your destination
+- **Watch the checklist**: It tells you exactly what you still need
+- **Can't afford Mars?**: Do 1-2 Moon missions first to build capital
+- **Crew capacity matters**: Make sure your rocket can hold enough crew for your destination
 
 ## 🔧 Customization Ideas
 
