@@ -1,3 +1,4 @@
+// src/rocket.ts
 class Rocket {
     private name: string;
     private fuelLevel: number;
@@ -155,6 +156,6 @@ Remaining Fuel: ${this.remainingFuel.toFixed(2)} liters`;
     }
 }
 
-// Make classes globally available
+// Make classes available globally for browser
 (window as any).Rocket = Rocket;
 (window as any).LaunchReport = LaunchReport;
