@@ -1,80 +1,100 @@
-/* style.css */
-body {
-    background: linear-gradient(to bottom, #000428, #004e92);
+/* Add these additional styles to your existing style.css */
+
+.section {
+    margin: 30px 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.rocket-specs, .destination-specs {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.status-panel h3 {
+    color: #00ff00;
+    margin-bottom: 15px;
+}
+
+.fuel-controls, .crew-controls {
+    margin-top: 15px;
+}
+
+.fuel-controls button, .crew-controls button {
+    background: rgba(0,255,0,0.1);
     color: white;
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
+    border: 1px solid #00ff00;
+    padding: 8px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
 }
 
-#game {
-    max-width: 800px;
-    margin: 0 auto;
+.fuel-controls button:hover, .crew-controls button:hover {
+    background: rgba(0,255,0,0.3);
 }
 
-h1 {
-    text-align: center;
-    font-size: 3em;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-}
-
-#budget-display {
-    text-align: center;
-    font-size: 1.5em;
-    margin: 20px;
-    padding: 10px;
+.crew-member {
+    display: inline-block;
     background: rgba(0,0,0,0.3);
-    border-radius: 10px;
+    padding: 5px 15px;
+    margin: 5px;
+    border-radius: 20px;
+    border: 1px solid #00ff00;
 }
 
-.rocket-options {
+.destination-options {
     display: flex;
-    justify-content: center;
     gap: 20px;
-    margin: 20px 0;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.rocket-btn {
+.destination-btn {
     background: rgba(0,0,0,0.5);
     color: white;
-    border: 2px solid #00ff00;
+    border: 2px solid #ff9900;
     padding: 20px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s;
-    font-size: 1em;
+    text-align: center;
+    font-size: 1.1em;
 }
 
-.rocket-btn:hover {
+.destination-btn:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0,255,0,0.5);
-    background: rgba(0,255,0,0.1);
+    box-shadow: 0 5px 20px rgba(255,153,0,0.5);
+    background: rgba(255,153,0,0.1);
 }
 
-.status-panel {
-    background: rgba(0,0,0,0.5);
+.message {
     padding: 20px;
     border-radius: 10px;
     margin: 20px 0;
+    text-align: center;
+    font-size: 1.1em;
 }
 
-.crew-list {
-    margin: 10px 0;
+.message.success {
+    background: rgba(0,255,0,0.2);
+    border: 2px solid #00ff00;
 }
 
-.fuel-gauge {
-    width: 100%;
-    height: 30px;
-    background: rgba(0,0,0,0.3);
-    border: 2px solid white;
-    border-radius: 15px;
-    overflow: hidden;
+.message.error {
+    background: rgba(255,0,0,0.2);
+    border: 2px solid #ff0000;
 }
 
-.fuel-level {
-    height: 100%;
-    background: linear-gradient(to right, #ff0000, #ffff00, #00ff00);
-    width: 0%;
-    transition: width 0.5s ease;
+.message.info {
+    background: rgba(0,150,255,0.2);
+    border: 2px solid #0096ff;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
