@@ -1,0 +1,25 @@
+{
+  "name": "mission-control-game",
+  "version": "1.0.0",
+  "description": "Space mission control game using the Rocket class",
+  "main": "game.js",
+  "type": "module",
+  "scripts": {
+    "check": "tsc",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node usage-example.ts"
+  },
+  "keywords": [
+    "typescript",
+    "game",
+    "education",
+    "rocket"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.9.3"
+  }
+}
