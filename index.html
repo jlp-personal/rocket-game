@@ -14,9 +14,47 @@
             Budget: $<span id="budget">50000</span>
         </div>
         
+        <!-- Mission Destinations - CHOOSE FIRST -->
+        <div id="destinations-section" class="section">
+            <h2>🎯 Mission Destinations</h2>
+            <p class="section-intro">Choose your destination first, then plan your mission!</p>
+            <div class="destination-options">
+                <button class="destination-btn" data-destination="ISS">
+                    🛸 International Space Station<br>
+                    <span class="destination-specs">
+                        Distance: 100km | Min Crew: 2 | Reward: $10,000
+                    </span>
+                </button>
+                <button class="destination-btn" data-destination="Moon">
+                    🌙 Moon<br>
+                    <span class="destination-specs">
+                        Distance: 500km | Min Crew: 3 | Reward: $50,000
+                    </span>
+                </button>
+                <button class="destination-btn" data-destination="Mars">
+                    🔴 Mars<br>
+                    <span class="destination-specs">
+                        Distance: 2000km | Min Crew: 4 | Reward: $200,000
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Selected Destination Display -->
+        <div id="selected-destination" class="section hidden">
+            <h2>📍 Selected Mission: <span id="destination-name"></span></h2>
+            <div class="mission-requirements">
+                <p><strong>Requirements:</strong></p>
+                <p>• Minimum Crew: <span id="min-crew"></span></p>
+                <p>• Recommended Fuel: <span id="recommended-fuel"></span>L+</p>
+                <p>• Mission Reward: $<span id="mission-reward"></span></p>
+            </div>
+        </div>
+        
         <!-- Rocket Selection -->
         <div id="rocket-selection" class="section">
-            <h2>Select Your Rocket</h2>
+            <h2>🚀 Select Your Rocket</h2>
+            <p class="section-intro">Each rocket has different capacity and fuel efficiency</p>
             <div class="rocket-options">
                 <button class="rocket-btn" data-rocket="0">
                     🚀 Swift<br>
@@ -44,7 +82,7 @@
         
         <!-- Current Rocket Status -->
         <div id="rocket-status" class="section hidden">
-            <h2>Current Rocket: <span id="rocket-name"></span></h2>
+            <h2>✅ Current Rocket: <span id="rocket-name"></span></h2>
             
             <div class="status-panel">
                 <h3>⛽ Fuel Status</h3>
@@ -52,71 +90,99 @@
                     <div class="fuel-level" id="fuel-level"></div>
                 </div>
                 <p>Fuel: <span id="fuel-current">0</span> / <span id="fuel-max">0</span> liters (<span id="fuel-percent">0</span>%)</p>
-                
-                <div class="fuel-controls">
-                    <button onclick="game.addFuel(500)">Add 500L ($1,000)</button>
-                    <button onclick="game.addFuel(1000)">Add 1000L ($2,000)</button>
-                    <button onclick="game.fillTank()">Fill Tank</button>
-                </div>
             </div>
             
             <div class="status-panel">
                 <h3>👨‍🚀 Crew Status</h3>
                 <p>Crew: <span id="crew-count">0</span> / <span id="crew-max">0</span></p>
                 <div id="crew-list" class="crew-list"></div>
-                
-                <div class="crew-controls">
-                    <h4>Available Crew Members</h4>
-                    <button onclick="game.addCrewMember('Commander Chen', 5000)">
-                        👨‍✈️ Commander Chen ($5,000)
-                    </button>
-                    <button onclick="game.addCrewMember('Pilot Garcia', 4000)">
-                        👩‍✈️ Pilot Garcia ($4,000)
-                    </button>
-                    <button onclick="game.addCrewMember('Engineer Kim', 3500)">
-                        👨‍🔧 Engineer Kim ($3,500)
-                    </button>
-                    <button onclick="game.addCrewMember('Dr. Patel', 3000)">
-                        👩‍⚕️ Dr. Patel ($3,000)
-                    </button>
-                    <button onclick="game.addCrewMember('Specialist Jones', 3000)">
-                        👨‍🔬 Specialist Jones ($3,000)
-                    </button>
-                    <button onclick="game.addCrewMember('Navigator Silva', 3500)">
-                        👩‍💼 Navigator Silva ($3,500)
-                    </button>
-                    <button onclick="game.addCrewMember('Technician Wang', 2800)">
-                        👨‍💻 Technician Wang ($2,800)
-                    </button>
-                    <button onclick="game.addCrewMember('Medical Officer Rodriguez', 3200)">
-                        👩‍⚕️ Medical Officer Rodriguez ($3,200)
-                    </button>
+            </div>
+        </div>
+
+        <!-- Fuel Management -->
+        <div id="fuel-section" class="section">
+            <h2>⛽ Fuel Management</h2>
+            <p class="section-intro">Fuel costs $2 per liter. You need at least 50% capacity to launch.</p>
+            <div id="fuel-status-preview" class="info-box">
+                <p><em>Select a rocket first to add fuel</em></p>
+            </div>
+            <div id="fuel-controls" class="hidden">
+                <div class="fuel-gauge">
+                    <div class="fuel-level" id="fuel-level-main"></div>
+                </div>
+                <p>Fuel: <span id="fuel-current-main">0</span> / <span id="fuel-max-main">0</span> liters (<span id="fuel-percent-main">0</span>%)</p>
+                <div class="fuel-controls">
+                    <button onclick="game.addFuel(500)">Add 500L ($1,000)</button>
+                    <button onclick="game.addFuel(1000)">Add 1000L ($2,000)</button>
+                    <button onclick="game.fillTank()">Fill Tank</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Crew Management -->
+        <div id="crew-section" class="section">
+            <h2>👨‍🚀 Crew Management</h2>
+            <p class="section-intro">Hire crew members for your mission. Each can only be hired once.</p>
+            
+            <div id="current-crew-display" class="crew-display">
+                <h3>Current Crew: <span id="crew-count-main">0</span> / <span id="crew-max-main">0</span></h3>
+                <div id="crew-list-main" class="crew-list">
+                    <p class="no-crew">Select a rocket first to hire crew</p>
                 </div>
             </div>
             
-            <div class="status-panel">
-                <h3>🎯 Mission Destinations</h3>
-                <div class="destination-options">
-                    <button class="destination-btn" onclick="game.launchToDestination('ISS')">
-                        🛸 International Space Station<br>
-                        <span class="destination-specs">
-                            Distance: 100km | Min Crew: 2 | Reward: $10,000
-                        </span>
+            <div class="crew-controls">
+                <h3>Available Crew Members</h3>
+                <div class="crew-grid">
+                    <button onclick="game.addCrewMember('Commander Chen', 5000)">
+                        👨‍✈️ Commander Chen<br>
+                        <span class="crew-cost">$5,000</span>
                     </button>
-                    <button class="destination-btn" onclick="game.launchToDestination('Moon')">
-                        🌙 Moon<br>
-                        <span class="destination-specs">
-                            Distance: 500km | Min Crew: 3 | Reward: $50,000
-                        </span>
+                    <button onclick="game.addCrewMember('Pilot Garcia', 4000)">
+                        👩‍✈️ Pilot Garcia<br>
+                        <span class="crew-cost">$4,000</span>
                     </button>
-                    <button class="destination-btn" onclick="game.launchToDestination('Mars')">
-                        🔴 Mars<br>
-                        <span class="destination-specs">
-                            Distance: 2000km | Min Crew: 4 | Reward: $200,000
-                        </span>
+                    <button onclick="game.addCrewMember('Engineer Kim', 3500)">
+                        👨‍🔧 Engineer Kim<br>
+                        <span class="crew-cost">$3,500</span>
+                    </button>
+                    <button onclick="game.addCrewMember('Dr. Patel', 3000)">
+                        👩‍⚕️ Dr. Patel<br>
+                        <span class="crew-cost">$3,000</span>
+                    </button>
+                    <button onclick="game.addCrewMember('Specialist Jones', 3000)">
+                        👨‍🔬 Specialist Jones<br>
+                        <span class="crew-cost">$3,000</span>
+                    </button>
+                    <button onclick="game.addCrewMember('Navigator Silva', 3500)">
+                        👩‍💼 Navigator Silva<br>
+                        <span class="crew-cost">$3,500</span>
+                    </button>
+                    <button onclick="game.addCrewMember('Technician Wang', 2800)">
+                        👨‍💻 Technician Wang<br>
+                        <span class="crew-cost">$2,800</span>
+                    </button>
+                    <button onclick="game.addCrewMember('Medical Officer Rodriguez', 3200)">
+                        👩‍⚕️ Medical Officer Rodriguez<br>
+                        <span class="crew-cost">$3,200</span>
                     </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Launch Control -->
+        <div id="launch-section" class="section">
+            <h2>🚀 Launch Control</h2>
+            <div id="launch-status" class="launch-checklist">
+                <h3>Pre-Launch Checklist:</h3>
+                <p id="check-destination" class="checklist-item unchecked">❌ Select destination</p>
+                <p id="check-rocket" class="checklist-item unchecked">❌ Purchase rocket</p>
+                <p id="check-fuel" class="checklist-item unchecked">❌ Add fuel (minimum 50% capacity)</p>
+                <p id="check-crew" class="checklist-item unchecked">❌ Hire crew (check destination requirements)</p>
+            </div>
+            <button id="launch-btn" class="launch-button" onclick="game.attemptLaunch()" disabled>
+                🚀 LAUNCH MISSION 🚀
+            </button>
         </div>
         
         <!-- Messages -->
