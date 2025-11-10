@@ -13,11 +13,13 @@ interface Destination {
     distance: number;
     minCrew: number;
     reward: number;
+    recommendedFuel: number;
 }
 
 class Game {
     private budget: number = 50000;
     private currentRocket: any = null;
+    private selectedDestination: string | null = null;
     private rocketConfigs: RocketConfig[];
     private destinations: Map<string, Destination>;
     private hiredCrew: Set<string> = new Set();
@@ -30,16 +32,18 @@ class Game {
         ];
 
         this.destinations = new Map([
-            ["ISS", { name: "International Space Station", distance: 100, minCrew: 2, reward: 10000 }],
-            ["Moon", { name: "Moon", distance: 500, minCrew: 3, reward: 50000 }],
-            ["Mars", { name: "Mars", distance: 2000, minCrew: 4, reward: 200000 }]
+            ["ISS", { name: "International Space Station", distance: 100, minCrew: 2, reward: 10000, recommendedFuel: 600 }],
+            ["Moon", { name: "Moon", distance: 500, minCrew: 3, reward: 50000, recommendedFuel: 2500 }],
+            ["Mars", { name: "Mars", distance: 2000, minCrew: 4, reward: 200000, recommendedFuel: 8000 }]
         ]);
 
         this.initializeEventListeners();
         this.updateBudgetDisplay();
+        this.updateLaunchChecklist();
     }
 
     private initializeEventListeners(): void {
+        // Rocket selection buttons
         const rocketButtons = document.querySelectorAll('.rocket-btn');
         rocketButtons.forEach((button) => {
             button.addEventListener('click', () => {
@@ -47,6 +51,45 @@ class Game {
                 this.selectRocket(rocketIndex);
             });
         });
+
+        // Destination selection buttons
+        const destinationButtons = document.querySelectorAll('.destination-btn');
+        destinationButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const destinationKey = button.getAttribute('data-destination') || '';
+                this.selectDestination(destinationKey);
+            });
+        });
+    }
+
+    private selectDestination(key: string): void {
+        const destination = this.destinations.get(key);
+        if (!destination) return;
+
+        this.selectedDestination = key;
+
+        // Update UI to show selected destination
+        const selectedSection = document.getElementById('selected-destination');
+        const destName = document.getElementById('destination-name');
+        const minCrew = document.getElementById('min-crew');
+        const recFuel = document.getElementById('recommended-fuel');
+        const reward = document.getElementById('mission-reward');
+
+        if (selectedSection) selectedSection.classList.remove('hidden');
+        if (destName) destName.textContent = destination.name;
+        if (minCrew) minCrew.textContent = destination.minCrew.toString();
+        if (recFuel) recFuel.textContent = destination.recommendedFuel.toString();
+        if (reward) reward.textContent = destination.reward.toLocaleString();
+
+        // Highlight selected destination button
+        document.querySelectorAll('.destination-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        const selectedBtn = document.querySelector(`.destination-btn[data-destination="${key}"]`);
+        if (selectedBtn) selectedBtn.classList.add('selected');
+
+        this.updateLaunchChecklist();
+        this.showMessage(`Mission selected: ${destination.name}! Now prepare your rocket.`, 'success');
     }
 
     private selectRocket(index: number): void {
@@ -72,8 +115,23 @@ class Game {
 
         this.updateBudgetDisplay();
         this.showRocketStatus();
-        this.updateRocketDisplay();
+        this.enableFuelControls();
+        this.updateAllDisplays();
+        this.updateLaunchChecklist();
         this.showMessage(`Rocket "${config.name}" purchased for $${config.cost.toLocaleString()}!`, 'success');
+    }
+
+    private showRocketStatus(): void {
+        const statusDiv = document.getElementById('rocket-status');
+        if (statusDiv) statusDiv.classList.remove('hidden');
+    }
+
+    private enableFuelControls(): void {
+        const fuelPreview = document.getElementById('fuel-status-preview');
+        const fuelControls = document.getElementById('fuel-controls');
+        
+        if (fuelPreview) fuelPreview.classList.add('hidden');
+        if (fuelControls) fuelControls.classList.remove('hidden');
     }
 
     addFuel(amount: number): void {
@@ -82,7 +140,7 @@ class Game {
             return;
         }
 
-        const cost = amount * 2; // $2 per liter
+        const cost = amount * 2;
         if (this.budget < cost) {
             this.showMessage(`Not enough budget! Need $${cost.toLocaleString()}`, 'error');
             return;
@@ -92,7 +150,8 @@ class Game {
             this.currentRocket.refuel(amount);
             this.budget -= cost;
             this.updateBudgetDisplay();
-            this.updateRocketDisplay();
+            this.updateAllDisplays();
+            this.updateLaunchChecklist();
             this.showMessage(`Added ${amount}L of fuel for $${cost.toLocaleString()}`, 'success');
         } catch (error: any) {
             this.showMessage(error.message, 'error');
@@ -123,7 +182,8 @@ class Game {
         this.currentRocket.refuel(needed);
         this.budget -= cost;
         this.updateBudgetDisplay();
-        this.updateRocketDisplay();
+        this.updateAllDisplays();
+        this.updateLaunchChecklist();
         this.showMessage(`Tank filled! Added ${needed.toFixed(0)}L for $${cost.toLocaleString()}`, 'success');
     }
 
@@ -148,24 +208,27 @@ class Game {
             this.hiredCrew.add(name);
             this.budget -= cost;
             this.updateBudgetDisplay();
-            this.updateRocketDisplay();
+            this.updateAllDisplays();
+            this.updateLaunchChecklist();
             this.showMessage(`${name} hired for $${cost.toLocaleString()}!`, 'success');
         } catch (error: any) {
             this.showMessage(error.message, 'error');
         }
     }
 
-    launchToDestination(destinationKey: string): void {
+    attemptLaunch(): void {
+        if (!this.selectedDestination) {
+            this.showMessage('Select a destination first!', 'error');
+            return;
+        }
+
         if (!this.currentRocket) {
             this.showMessage('Select a rocket first!', 'error');
             return;
         }
 
-        const destination = this.destinations.get(destinationKey);
-        if (!destination) {
-            this.showMessage('Invalid destination!', 'error');
-            return;
-        }
+        const destination = this.destinations.get(this.selectedDestination);
+        if (!destination) return;
 
         const crewCount = this.currentRocket.getCrewMembers().length;
         if (crewCount < destination.minCrew) {
@@ -176,20 +239,10 @@ class Game {
             return;
         }
 
-        const fuelNeeded = destination.distance * this.currentRocket.getFuelCapacity() / 1000;
-        if (this.currentRocket.getFuelLevel() < fuelNeeded) {
-            this.showMessage(
-                `Not enough fuel for ${destination.name}! Need at least ${fuelNeeded.toFixed(0)}L`,
-                'error'
-            );
-            return;
-        }
-
         try {
             const report = this.currentRocket.launch();
             this.budget += destination.reward;
             
-            // Show detailed launch report
             const reportMessage = `
                 <strong>🚀 MISSION TO ${destination.name.toUpperCase()} SUCCESSFUL! 🚀</strong><br><br>
                 <strong>Rocket:</strong> ${report.rocketName}<br>
@@ -202,69 +255,181 @@ class Game {
             
             this.showMessage(reportMessage, 'success');
             this.updateBudgetDisplay();
-            this.updateRocketDisplay();
+            this.updateAllDisplays();
+            this.disableControls();
             
-            // Disable rocket controls after launch
             setTimeout(() => {
-                this.showMessage('Mission complete! Select a new rocket to continue.', 'info');
-            }, 5000);
+                this.showMessage('Mission complete! Refresh the page to start a new mission.', 'info');
+            }, 6000);
             
         } catch (error: any) {
             this.showMessage(error.message, 'error');
         }
     }
 
-    private showRocketStatus(): void {
-        const selectionDiv = document.getElementById('rocket-selection');
-        const statusDiv = document.getElementById('rocket-status');
-        
-        if (selectionDiv) selectionDiv.classList.add('hidden');
-        if (statusDiv) statusDiv.classList.remove('hidden');
+    private disableControls(): void {
+        const buttons = document.querySelectorAll('.fuel-controls button, .crew-controls button, .rocket-btn, .destination-btn, .launch-button');
+        buttons.forEach(button => {
+            (button as HTMLButtonElement).disabled = true;
+        });
     }
 
-    private updateRocketDisplay(): void {
+    private updateLaunchChecklist(): void {
+        const checkDest = document.getElementById('check-destination');
+        const checkRocket = document.getElementById('check-rocket');
+        const checkFuel = document.getElementById('check-fuel');
+        const checkCrew = document.getElementById('check-crew');
+        const launchBtn = document.getElementById('launch-btn') as HTMLButtonElement;
+
+        let allChecked = true;
+
+        // Check destination
+        if (this.selectedDestination) {
+            if (checkDest) {
+                checkDest.textContent = '✅ Destination selected';
+                checkDest.className = 'checklist-item checked';
+            }
+        } else {
+            allChecked = false;
+            if (checkDest) {
+                checkDest.textContent = '❌ Select destination';
+                checkDest.className = 'checklist-item unchecked';
+            }
+        }
+
+        // Check rocket
+        if (this.currentRocket && !this.currentRocket.getLaunched()) {
+            if (checkRocket) {
+                checkRocket.textContent = `✅ Rocket purchased (${this.currentRocket.getName()})`;
+                checkRocket.className = 'checklist-item checked';
+            }
+        } else {
+            allChecked = false;
+            if (checkRocket) {
+                checkRocket.textContent = '❌ Purchase rocket';
+                checkRocket.className = 'checklist-item unchecked';
+            }
+        }
+
+        // Check fuel
+        if (this.currentRocket) {
+            const fuelPercent = this.currentRocket.getFuelPercentage();
+            if (fuelPercent >= 50) {
+                if (checkFuel) {
+                    checkFuel.textContent = `✅ Fuel sufficient (${fuelPercent.toFixed(1)}%)`;
+                    checkFuel.className = 'checklist-item checked';
+                }
+            } else {
+                allChecked = false;
+                if (checkFuel) {
+                    checkFuel.textContent = `❌ Add fuel (currently ${fuelPercent.toFixed(1)}%, need 50%+)`;
+                    checkFuel.className = 'checklist-item unchecked';
+                }
+            }
+        } else {
+            allChecked = false;
+        }
+
+        // Check crew
+        if (this.currentRocket && this.selectedDestination) {
+            const destination = this.destinations.get(this.selectedDestination);
+            const crewCount = this.currentRocket.getCrewMembers().length;
+            
+            if (destination && crewCount >= destination.minCrew) {
+                if (checkCrew) {
+                    checkCrew.textContent = `✅ Crew ready (${crewCount}/${destination.minCrew} minimum)`;
+                    checkCrew.className = 'checklist-item checked';
+                }
+            } else {
+                allChecked = false;
+                if (checkCrew) {
+                    const minCrew = destination ? destination.minCrew : '?';
+                    checkCrew.textContent = `❌ Hire crew (have ${crewCount}, need ${minCrew} minimum)`;
+                    checkCrew.className = 'checklist-item unchecked';
+                }
+            }
+        } else {
+            allChecked = false;
+        }
+
+        // Enable/disable launch button
+        if (launchBtn) {
+            launchBtn.disabled = !allChecked;
+        }
+    }
+
+    private updateAllDisplays(): void {
         if (!this.currentRocket) return;
 
-        // Update rocket name
-        const nameEl = document.getElementById('rocket-name');
-        if (nameEl) nameEl.textContent = this.currentRocket.getName();
+        // Update main rocket status
+        const rocketName = document.getElementById('rocket-name');
+        if (rocketName) rocketName.textContent = this.currentRocket.getName();
 
-        // Update fuel status
-        const fuelCurrent = document.getElementById('fuel-current');
-        const fuelMax = document.getElementById('fuel-max');
-        const fuelPercent = document.getElementById('fuel-percent');
-        const fuelLevel = document.getElementById('fuel-level');
+        // Update fuel in all places
+        const fuelCurrent = this.currentRocket.getFuelLevel();
+        const fuelMax = this.currentRocket.getFuelCapacity();
+        const fuelPercent = this.currentRocket.getFuelPercentage();
 
-        if (fuelCurrent) fuelCurrent.textContent = this.currentRocket.getFuelLevel().toFixed(0);
-        if (fuelMax) fuelMax.textContent = this.currentRocket.getFuelCapacity().toFixed(0);
-        if (fuelPercent) fuelPercent.textContent = this.currentRocket.getFuelPercentage().toFixed(1);
-        if (fuelLevel) fuelLevel.style.width = `${this.currentRocket.getFuelPercentage()}%`;
+        // Main fuel section
+        const fuelCurrentMain = document.getElementById('fuel-current-main');
+        const fuelMaxMain = document.getElementById('fuel-max-main');
+        const fuelPercentMain = document.getElementById('fuel-percent-main');
+        const fuelLevelMain = document.getElementById('fuel-level-main');
 
-        // Update crew status
-        const crewCount = document.getElementById('crew-count');
-        const crewMax = document.getElementById('crew-max');
-        const crewList = document.getElementById('crew-list');
+        if (fuelCurrentMain) fuelCurrentMain.textContent = fuelCurrent.toFixed(0);
+        if (fuelMaxMain) fuelMaxMain.textContent = fuelMax.toFixed(0);
+        if (fuelPercentMain) fuelPercentMain.textContent = fuelPercent.toFixed(1);
+        if (fuelLevelMain) fuelLevelMain.style.width = `${fuelPercent}%`;
 
+        // Rocket status fuel
+        const fuelCurrentStatus = document.getElementById('fuel-current');
+        const fuelMaxStatus = document.getElementById('fuel-max');
+        const fuelPercentStatus = document.getElementById('fuel-percent');
+        const fuelLevelStatus = document.getElementById('fuel-level');
+
+        if (fuelCurrentStatus) fuelCurrentStatus.textContent = fuelCurrent.toFixed(0);
+        if (fuelMaxStatus) fuelMaxStatus.textContent = fuelMax.toFixed(0);
+        if (fuelPercentStatus) fuelPercentStatus.textContent = fuelPercent.toFixed(1);
+        if (fuelLevelStatus) fuelLevelStatus.style.width = `${fuelPercent}%`;
+
+        // Update crew in all places
         const crew = this.currentRocket.getCrewMembers();
-        if (crewCount) crewCount.textContent = crew.length.toString();
-        if (crewMax) crewMax.textContent = this.currentRocket.getMaxCrewCapacity().toString();
+        const crewMax = this.currentRocket.getMaxCrewCapacity();
+
+        // Main crew section
+        const crewCountMain = document.getElementById('crew-count-main');
+        const crewMaxMain = document.getElementById('crew-max-main');
+        const crewListMain = document.getElementById('crew-list-main');
+
+        if (crewCountMain) crewCountMain.textContent = crew.length.toString();
+        if (crewMaxMain) crewMaxMain.textContent = crewMax.toString();
         
-        if (crewList) {
+        if (crewListMain) {
             if (crew.length === 0) {
-                crewList.innerHTML = '<p class="no-crew">No crew members assigned</p>';
+                crewListMain.innerHTML = '<p class="no-crew">No crew members hired yet</p>';
             } else {
-                crewList.innerHTML = crew.map(member => 
+                crewListMain.innerHTML = crew.map(member => 
                     `<div class="crew-member">👨‍🚀 ${member}</div>`
                 ).join('');
             }
         }
 
-        // Disable buttons if rocket has launched
-        if (this.currentRocket.getLaunched()) {
-            const buttons = document.querySelectorAll('.fuel-controls button, .crew-controls button');
-            buttons.forEach(button => {
-                (button as HTMLButtonElement).disabled = true;
-            });
+        // Rocket status crew
+        const crewCountStatus = document.getElementById('crew-count');
+        const crewMaxStatus = document.getElementById('crew-max');
+        const crewListStatus = document.getElementById('crew-list');
+
+        if (crewCountStatus) crewCountStatus.textContent = crew.length.toString();
+        if (crewMaxStatus) crewMaxStatus.textContent = crewMax.toString();
+        
+        if (crewListStatus) {
+            if (crew.length === 0) {
+                crewListStatus.innerHTML = '<p class="no-crew">No crew members assigned</p>';
+            } else {
+                crewListStatus.innerHTML = crew.map(member => 
+                    `<div class="crew-member">👨‍🚀 ${member}</div>`
+                ).join('');
+            }
         }
     }
 
@@ -283,7 +448,6 @@ class Game {
         messageEl.className = `message ${type}`;
         messageEl.classList.remove('hidden');
 
-        // Auto-hide after 5 seconds for success/info messages
         if (type !== 'error') {
             setTimeout(() => {
                 messageEl.classList.add('hidden');
@@ -296,5 +460,5 @@ class Game {
 let game: Game;
 window.addEventListener('DOMContentLoaded', () => {
     game = new Game();
-    (window as any).game = game; // Make game accessible globally for onclick handlers
+    (window as any).game = game;
 });
